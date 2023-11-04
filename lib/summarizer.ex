@@ -1,9 +1,18 @@
 defmodule Summarizer do
-  @moduledoc """
-  Summarizer keeps the contexts that define your domain
-  and business logic.
+  @moduledoc false
 
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
-  """
+  alias Summarizer.Filetree
+  alias Summarizer.Filter
+  alias Summarizer.Formatter
+
+  def generate_file_tree(path) when is_binary(path) do
+    path
+    |> Filetree.generate_file_tree(files_only: true)
+    |> Filter.filter_files()
+    |> Formatter.format_tree()
+  end
+
+  def generate_file_tree(_) do
+    raise ArgumentError, "path must be a string"
+  end
 end
