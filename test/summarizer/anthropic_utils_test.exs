@@ -54,4 +54,42 @@ defmodule Summarizer.AnthropicUtilsTest do
                Utils.parse_compose_file_tree_analysis_message_response(@no_files_tag_response)
     end
   end
+
+  describe "parse_summarize_text_to_readme_response/1" do
+    @successful_response """
+      <ReadmeFile>
+        WiseGPTEx is an Elixir library that provides an API for interacting with OpenAI...
+      </ReadmeFile>
+    """
+
+    @incomplete_response """
+      <ReadmeFile>
+        WiseGPTEx is an Elixir library...
+    """
+
+    @no_readme_tag_response """
+      WiseGPTEx is an Elixir library...
+    """
+
+    setup do
+      old_level = Logger.level()
+      :ok = Logger.configure(level: :critical)
+      on_exit(fn -> :ok = Logger.configure(level: old_level) end)
+    end
+
+    test "successful parsing" do
+      assert {:ok, "WiseGPTEx is an Elixir library that provides an API for interacting with OpenAI..."} ==
+               Utils.parse_summarize_text_to_readme_response(@successful_response)
+    end
+
+    test "incomplete XML" do
+      assert {:error, "Error: Cannot parse the response"} ==
+               Utils.parse_summarize_text_to_readme_response(@incomplete_response)
+    end
+
+    test "no <ReadmeFile> tag" do
+      assert {:error, "Error: No <ReadmeFile> tag found"} ==
+               Utils.parse_summarize_text_to_readme_response(@no_readme_tag_response)
+    end
+  end
 end

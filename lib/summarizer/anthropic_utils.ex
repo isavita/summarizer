@@ -127,4 +127,27 @@ defmodule Summarizer.AnthropicUtils do
       :exit, _ -> {:error, "Error: Cannot parse the response"}
     end
   end
+
+  def parse_summarize_text_to_readme_response(body) do
+    try do
+      body = Regex.replace(~r{<readmefile>}i, body, "<ReadmeFile>")
+      body = Regex.replace(~r{</readmefile>}i, body, "</ReadmeFile>")
+
+      case String.split(body, ~r{<ReadmeFile>}, parts: 2) do
+        [_, rest] ->
+          xml_content = "<ReadmeFile>" <> String.trim(rest)
+          parsed_response = xml_content |> xpath(~x"//ReadmeFile/text()"l, [])
+
+          case parsed_response do
+            [] -> {:error, "Error: No content found in <ReadmeFile> tag"}
+            [summary] -> {:ok, to_string(summary) |> String.trim()}
+          end
+
+        _ ->
+          {:error, "Error: No <ReadmeFile> tag found"}
+      end
+    catch
+      :exit, _ -> {:error, "Error: Cannot parse the response"}
+    end
+  end
 end

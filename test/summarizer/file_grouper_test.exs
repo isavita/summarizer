@@ -74,7 +74,7 @@ defmodule Summarizer.FileGrouperTest do
 
       assert length(structs) > 1
       assert Enum.all?(structs, fn %FileGrouper{current_size: size} -> size <= 400_000 end)
-      assert byte_size(List.last(structs).files_contents |> List.first()) <= 400_000 - 3 * 100_000
+      assert byte_size(List.last(structs).files_contents |> List.first() |> elem(1)) <= 400_000 - 3 * 100_000
     end
   end
 end
