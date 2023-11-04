@@ -88,6 +88,21 @@ defmodule Summarizer.AnthropicUtils do
       |> Enum.join("\n")
   end
 
+  def compose_final_summary_message(combined_summary) do
+    """
+    \n\nHuman:
+    The text provided below is a collection of summaries for important files in a project.
+    The goal is to obtain a concise and clear summary for the README file that gives an overview of the project based on these summaries.
+    Please provide a summarization that can serve as an introduction to the project, and could be placed at the beginning of the README file.
+    It is crucial that the response is formatted with the summarization enclosed within the <ReadmeFile> XML tag as shown in the example: <ReadmeFile>{{README}}</ReadmeFile>.
+    #{combined_summary}
+    <ReadmeFile>
+    {{README}}}
+    </ReadmeFile>\n\n
+    Assistant:
+    """
+  end
+
   def parse_compose_file_tree_analysis_message_response(body) do
     try do
       body = Regex.replace(~r{<files>}, body, "<Files>")

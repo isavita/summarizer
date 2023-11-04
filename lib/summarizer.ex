@@ -45,17 +45,29 @@ defmodule Summarizer do
       |> Enum.map(fn {:ok, summary} -> summary end)
 
     if length(summaries) > 1 do
-      combined_summary = Enum.join(summaries, "\n")
-      summarize_text(combined_summary)
+      summaries
+      |> Enum.join("\n")
+      |> summarize_text()
     else
       List.first(summaries)
+      |> summarize_text()
     end
   end
 
   defp summarize_group(%FileGrouper{files_contents: files_contents}) do
     message = Utils.compose_files_summary_message(files_contents)
 
-    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000)
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000) do
+      {:ok, resp_body}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp summarize_text(combined_summary) do
+    message = Utils.compose_final_summary_message(combined_summary)
+
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000) do
       {:ok, resp_body}
     else
       {:error, reason} -> {:error, reason}
