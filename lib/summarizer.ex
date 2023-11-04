@@ -2,6 +2,7 @@ defmodule Summarizer do
   @moduledoc false
 
   alias Summarizer.AnthropicHTTPClient
+  alias Summarizer.FileGrouper
   alias Summarizer.Filetree
   alias Summarizer.Filter
   alias Summarizer.Formatter
@@ -37,14 +38,27 @@ defmodule Summarizer do
   end
 
   defp summarize_project(important_files) do
-    # # Assume get_file_content/1 reads the file and returns its content
-    # file_contents = Enum.map(important_files, &get_file_content/1)
-    # # Assuming the file_contents is formatted as a string
-    # response = AnthropicHTTPClient.complete("Summarize Project", Enum.join(file_contents, "\n"))
-    # # Assume the response contains the summary of the project
-    # summary = parse_response(response)
-    # summary
-    {:ok, important_files}
+    file_groups = FileGrouper.map_files_to_structs(important_files)
+    summaries = Enum.map(file_groups, &summarize_group/1)
+
+    if length(summaries) > 1 do
+      combined_summary = Enum.join(summaries, "\n\n")
+      # summarize_text(combined_summary)
+    else
+      List.first(summaries)
+    end
+  end
+
+  defp summarize_group(%FileGrouper{files_contents: files_contents}) do
+    message = Utils.compose_files_summary_message(files_contents)
+
+    AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000)
+    # with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000),
+    #      {:ok, important_files} <- Utils.parse_compose_files_summary_message_response(resp_body) do
+    #   {:ok, important_files}
+    # else
+    #   {:error, reason} -> {:error, reason}
+    # end
   end
 
   defp validate_summary(summary), do: {:ok, summary}

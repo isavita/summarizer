@@ -52,6 +52,41 @@ defmodule Summarizer.AnthropicUtils do
     """
   end
 
+  def compose_files_summary_message(files_contents) do
+    files_xml = files_contents_to_xml(files_contents)
+
+    """
+    \n\nHuman:
+    <FileContents>
+      #{files_xml}
+    </FileContents>
+    Please provide a summary for each of the files provided above.
+    The summaries should be concise, clear, and tailored for programmers familiar with the programming language but not with the project.
+    The output should be grouped under the <FileSummaries> tag with each file's summary encapsulated within a <FileSummary> tag alongside its file path.
+    It is crucial that the response contains only the specified <xml> tags with the file summaries and nothing else.
+    <FileSummaries>
+      <FileSummary>
+        <File>/path/to/merge_sort.cpp</File>
+        <Summary>This C++ file contains an implementation of the Merge Sort algorithm, which is a stable, efficient sorting algorithm with a time complexity of O(n log n). The implementation leverages recursion to divide the input array into smaller chunks, sort them individually, and then merge them back together in sorted order.</Summary>
+      </FileSummary>
+    </FileSummaries>\n\n
+    Assistant:<FileSummaries>
+    """
+  end
+
+  defp files_contents_to_xml(files_contents) do
+    files_contents
+      |> Enum.map(fn {file_path, content} ->
+        """
+        <FileContent>
+          <File>#{file_path}</File>
+          <Content>#{content}</Content>
+        </FileContent>
+        """
+      end)
+      |> Enum.join("\n")
+  end
+
   def parse_compose_file_tree_analysis_message_response(body) do
     try do
       body = Regex.replace(~r{<files>}, body, "<Files>")
