@@ -34,7 +34,7 @@ defmodule Summarizer.FileGrouper do
         end
       else
         # Append content to the current struct
-        updated_struct = update_struct(current_struct, content, content_length)
+        updated_struct = update_struct(current_struct, file_path, content, content_length)
         {acc, updated_struct}
       end
     end)
@@ -59,11 +59,12 @@ defmodule Summarizer.FileGrouper do
 
   defp update_struct(
          %__MODULE__{files_contents: files_contents, current_size: current_size} = struct,
+         file_path,
          content,
          content_length
        ) do
     struct
-    |> Map.put(:files_contents, files_contents ++ [content])
+    |> Map.put(:files_contents, files_contents ++ [{file_path, content}])
     |> Map.put(:current_size, current_size + content_length)
   end
 

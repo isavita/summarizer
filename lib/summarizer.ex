@@ -39,11 +39,14 @@ defmodule Summarizer do
 
   defp summarize_project(important_files) do
     file_groups = FileGrouper.map_files_to_structs(important_files)
-    summaries = Enum.map(file_groups, &summarize_group/1)
+    summaries =
+      Enum.map(file_groups, &summarize_group/1)
+      |> Enum.filter(fn {:ok, _} -> true; _ -> false end)
+      |> Enum.map(fn {:ok, summary} -> summary end)
 
     if length(summaries) > 1 do
-      combined_summary = Enum.join(summaries, "\n\n")
-      # summarize_text(combined_summary)
+      combined_summary = Enum.join(summaries, "\n")
+      summarize_text(combined_summary)
     else
       List.first(summaries)
     end
@@ -52,13 +55,11 @@ defmodule Summarizer do
   defp summarize_group(%FileGrouper{files_contents: files_contents}) do
     message = Utils.compose_files_summary_message(files_contents)
 
-    AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000)
-    # with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000),
-    #      {:ok, important_files} <- Utils.parse_compose_files_summary_message_response(resp_body) do
-    #   {:ok, important_files}
-    # else
-    #   {:error, reason} -> {:error, reason}
-    # end
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000)
+      {:ok, resp_body}
+    else
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   defp validate_summary(summary), do: {:ok, summary}

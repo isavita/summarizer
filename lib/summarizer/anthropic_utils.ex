@@ -1,6 +1,7 @@
 defmodule Summarizer.AnthropicUtils do
   @moduledoc false
   import SweetXml
+  require Logger
 
   @doc """
   Extracts the completion from the response body.
