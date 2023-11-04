@@ -72,6 +72,7 @@ defmodule Summarizer.AnthropicHTTPClient do
     timeout = Keyword.get(opts, :timeout, @default_timeout_ms)
     max_tokens_to_sample = Keyword.get(opts, :max_tokens_to_sample, @default_max_tokens_to_sample)
     stream = Keyword.get(opts, :stream, false)
+    extract_fn = Keyword.get(opts, :extract_fn, &Utils.extract_complete/1)
 
     payload =
       %{
@@ -83,7 +84,7 @@ defmodule Summarizer.AnthropicHTTPClient do
       }
       |> Jason.encode!()
 
-    post_complete(payload, timeout, &Utils.extract_complete/1)
+    post_complete(payload, timeout, extract_fn)
   end
 
   defp post_complete(payload, timeout, extract_fn) do
@@ -105,10 +106,10 @@ defmodule Summarizer.AnthropicHTTPClient do
   end
 
   defp http_client do
-    Application.get_env(:summarize, :http_client, HTTPoison)
+    Application.get_env(:summarizer, :http_client, HTTPoison)
   end
 
   defp anthropic_api_key do
-    Application.fetch_env!(:summarize, :anthropic_api_key)
+    Application.fetch_env!(:summarizer, :anthropic_api_key)
   end
 end

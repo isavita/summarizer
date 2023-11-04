@@ -21,6 +21,7 @@ config :summarizer, SummarizerWeb.Endpoint,
   pubsub_server: Summarizer.PubSub,
   live_view: [signing_salt: "iMzxljDO"]
 
+config :summarizer, :anthropic_api_key, "SECRET"
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
