@@ -1,5 +1,6 @@
 defmodule Summarizer.FilterTest do
   use ExUnit.Case
+  alias Summarizer.Filter
 
   describe "filter_files/1" do
     test "includes files with a wide range of whitelisted extensions" do
@@ -37,7 +38,7 @@ defmodule Summarizer.FilterTest do
         "webpack.config.js"
       ]
 
-      assert Summarizer.Filter.filter_files(files) == expected_files
+      assert Filter.filter_files(files) == expected_files
     end
   end
 end

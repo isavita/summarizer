@@ -20,7 +20,7 @@ defmodule Summarizer.Filetree do
               if opts[:files_only] do
                 traverse_directory(full_path, opts)
               else
-                [full_path | traverse_directory(full_path, opts)]
+                [full_path <> "/" | traverse_directory(full_path, opts)]
               end
 
             {:ok, %File.Stat{type: :regular}} ->

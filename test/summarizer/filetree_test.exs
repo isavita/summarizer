@@ -29,7 +29,7 @@ defmodule Summarizer.FiletreeTest do
       expected = [
         "#{dir}/file1.txt",
         "#{dir}/file2.txt",
-        "#{dir}/nested",
+        "#{dir}/nested/",
         "#{dir}/nested/file3.txt"
       ]
 
