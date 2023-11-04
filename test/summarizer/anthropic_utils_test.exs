@@ -78,7 +78,8 @@ defmodule Summarizer.AnthropicUtilsTest do
     end
 
     test "successful parsing" do
-      assert {:ok, "WiseGPTEx is an Elixir library that provides an API for interacting with OpenAI..."} ==
+      assert {:ok,
+              "WiseGPTEx is an Elixir library that provides an API for interacting with OpenAI..."} ==
                Utils.parse_summarize_text_to_readme_response(@successful_response)
     end
 

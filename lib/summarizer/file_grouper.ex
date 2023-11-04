@@ -29,7 +29,11 @@ defmodule Summarizer.FileGrouper do
           end
         else
           # Finalize the current struct and start a new one with the current content
-          new_struct = %__MODULE__{files_contents: [{file_path, content}], current_size: content_length}
+          new_struct = %__MODULE__{
+            files_contents: [{file_path, content}],
+            current_size: content_length
+          }
+
           {[current_struct | acc], new_struct}
         end
       else

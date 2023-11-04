@@ -77,15 +77,15 @@ defmodule Summarizer.AnthropicUtils do
 
   defp files_contents_to_xml(files_contents) do
     files_contents
-      |> Enum.map(fn {file_path, content} ->
-        """
-        <FileContent>
-          <File>#{file_path}</File>
-          <Content>#{content}</Content>
-        </FileContent>
-        """
-      end)
-      |> Enum.join("\n")
+    |> Enum.map(fn {file_path, content} ->
+      """
+      <FileContent>
+        <File>#{file_path}</File>
+        <Content>#{content}</Content>
+      </FileContent>
+      """
+    end)
+    |> Enum.join("\n")
   end
 
   def compose_final_summary_message(combined_summary) do
