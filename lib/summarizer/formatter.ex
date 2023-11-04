@@ -12,4 +12,18 @@ defmodule Summarizer.Formatter do
     formatted_tail = format_tree(tail, depth + count, new_parent)
     formatted_head <> formatted_tail
   end
+
+  def format_tree_xml(file_paths) do
+    """
+    <Files>
+    #{do_format_tree_xml(file_paths)}
+    </Files>
+    """
+  end
+
+  defp do_format_tree_xml([]), do: ""
+
+  defp do_format_tree_xml([head | tail]) do
+    "<File>#{head}</File>\n" <> do_format_tree_xml(tail)
+  end
 end

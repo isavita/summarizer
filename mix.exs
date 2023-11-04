@@ -40,7 +40,8 @@ defmodule Summarizer.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:mox, "~> 1.0", only: :test},
-      {:httpoison, "~> 2.0"}
+      {:httpoison, "~> 2.0"},
+      {:sweet_xml, "~> 0.7.1"}
     ]
   end
 
