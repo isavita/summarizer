@@ -4,10 +4,10 @@ defmodule Summarizer.FormatterTest do
 
   test "formats a list into a tree structure" do
     file_structure = [
-      {:dir, "lib"},
+      "lib/",
       "lib/filetree.ex",
       "lib/filter.ex",
-      {:dir, "test"},
+      "test/",
       "test/filetree_test.exs",
       "test/filter_test.exs"
     ]
@@ -16,9 +16,9 @@ defmodule Summarizer.FormatterTest do
       "lib/\n" <>
         "  filetree.ex\n" <>
         "  filter.ex\n" <>
-        "test/\n" <>
-        "  filetree_test.exs\n" <>
-        "  filter_test.exs\n"
+        "  test/\n" <>
+        "    filetree_test.exs\n" <>
+        "    filter_test.exs\n"
 
     assert Formatter.format_tree(file_structure) == expected_output
   end
