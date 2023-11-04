@@ -54,6 +54,11 @@ defmodule Summarizer.AnthropicUtils do
 
   def parse_compose_file_tree_analysis_message_response(body) do
     try do
+      body = Regex.replace(~r{<files>}, body, "<Files>")
+      body = Regex.replace(~r{</files>}, body, "</Files>")
+      body = Regex.replace(~r{<file>}, body, "<File>")
+      body = Regex.replace(~r{</file>}, body, "</File>")
+
       case String.split(body, ~r{<Files>}, parts: 2) do
         [_, rest] ->
           xml_content = "<Files>" <> String.trim(rest)

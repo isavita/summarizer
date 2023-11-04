@@ -39,14 +39,14 @@ defmodule Summarizer.AnthropicUtilsTest do
                Utils.parse_compose_file_tree_analysis_message_response(@successful_response)
     end
 
+    test "successful parsing lowercase tags" do
+      assert {:ok, ["/path/to/file1.ext", "/path/to/file2.ext"]} ==
+               Utils.parse_compose_file_tree_analysis_message_response(@lowercase_response)
+    end
+
     test "incomplete XML" do
       assert {:error, "Error: Cannot parse the response"} ==
                Utils.parse_compose_file_tree_analysis_message_response(@incomplete_response)
-    end
-
-    test "lowercase tags" do
-      assert {:error, "Error: No <Files> tag found"} ==
-               Utils.parse_compose_file_tree_analysis_message_response(@lowercase_response)
     end
 
     test "no <Files> tag" do

@@ -5,7 +5,7 @@ defmodule Summarizer do
   alias Summarizer.Filetree
   alias Summarizer.Filter
   alias Summarizer.Formatter
-  alias Summarizer.AnthropicUtils
+  alias Summarizer.AnthropicUtils, as: Utils
 
   def summarize(path) do
     # Add few function that should called claude api
@@ -22,10 +22,18 @@ defmodule Summarizer do
   end
 
   def identify_important_files(path) do
-    path
-    |> generate_file_tree()
-    |> AnthropicUtils.compose_file_tree_analysis_message()
-    |> AnthropicHTTPClient.complete()
+    message =
+      path
+      |> generate_file_tree()
+      |> Utils.compose_file_tree_analysis_message()
+
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message),
+         {:ok, important_files} <-
+           Utils.parse_compose_file_tree_analysis_message_response(resp_body) do
+      {:ok, important_files}
+    else
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   defp summarize_project(important_files) do
