@@ -5,7 +5,7 @@ defmodule Summarizer.AnthropicHTTPClient do
   @anthropic_complete_api_url "https://api.anthropic.com/v1/complete"
   @anthropic_version "2023-06-01"
   @default_model "claude-2"
-  @default_temperature 0.2
+  @default_temperature 0.1
   @default_max_tokens_to_sample 8_000
   # 60 minutes
   @default_timeout_ms 3_600_000

@@ -49,7 +49,7 @@ defmodule Summarizer.AnthropicUtils do
       <File>/path/to/file2.ext</File>
       <!-- More files as needed -->
     </Files>\n\n
-    Assistant:<Files>
+    Assistant:
     """
   end
 
