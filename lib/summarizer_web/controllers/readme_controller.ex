@@ -1,16 +1,44 @@
 defmodule SummarizerWeb.ReadmeController do
   use SummarizerWeb, :controller
 
+  def index(conn, _params) do
+    html_form = """
+    <html>
+      <body>
+        <form action="/create" method="post">
+          <input type="text" name="url" placeholder="Enter GitHub URL" required>
+          <input type="submit" value="Generate README">
+        </form>
+      </body>
+    </html>
+    """
+
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_resp(200, html_form)
+  end
+
   def create(conn, %{"url" => github_url}) do
     with {:ok, tmp_dir} <- clone_repo_to_tmp(github_url),
          {:ok, summary} <- Summarizer.summarize(tmp_dir),
          {:ok, _} <- File.rm_rf(tmp_dir) do
       conn
-      |> put_resp_content_type("application/json")
-      |> send_resp(200, Jason.encode!(%{data: summary}))
+      |> put_resp_content_type("text/html")
+      |> send_resp(200, success_html(summary))
     else
-      {:error, error_msg} -> send_resp(conn, 400, Jason.encode!(%{error: inspect(error_msg)}))
+      {:error, error_msg} ->
+        conn
+        |> put_resp_content_type("text/html")
+        |> send_resp(400, error_html(inspect(error_msg)))
     end
+  end
+
+  defp success_html(summary) do
+    "<html><body><pre>" <> summary <> "</pre></body></html>"
+  end
+
+  defp error_html(error_msg) do
+    "<html><body><p>Error: " <> error_msg <> "</p></body></html>"
   end
 
   defp clone_repo_to_tmp(github_url) do

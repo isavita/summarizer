@@ -7,9 +7,15 @@ defmodule SummarizerWeb.Router do
 
   get "/health", SummarizerWeb.HealthController, :index
 
+  scope "/", SummarizerWeb do
+    get "/", ReadmeController, :index
+    post "/create", ReadmeController, :create
+
+    match :*, "/*path", PageController, :not_found
+  end
+
   scope "/api", SummarizerWeb do
     pipe_through :api
-    post "/generate_readme", ReadmeController, :create
   end
 
   if Application.compile_env(:summarizer, :dev_routes) do
@@ -17,6 +23,4 @@ defmodule SummarizerWeb.Router do
       pipe_through [:fetch_session, :protect_from_forgery]
     end
   end
-
-  match :*, "/*path", SummarizerWeb.PageController, :not_found
 end

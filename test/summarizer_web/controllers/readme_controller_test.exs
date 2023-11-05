@@ -22,6 +22,12 @@ defmodule SummarizerWeb.ReadmeControllerTest do
       "{\"completion\":\" <ReadmeFile>\\n\\n# Summarizer\\n\\nThis Phoenix web application generates README files by summarizing codebases. The main logic for summarizing files is in `summarizer.ex`. It identifies important files, summarizes file groups, combines summaries, and validates output using utility modules and the Anthropic HTTP client. \\n\\nThe `page_controller.ex` handles rendering 404 pages. The router defines the application's API, dev, health check, and 404 catch-all routes.\\n\\n</ReadmeFile>\",\"stop_reason\":\"stop_sequence\",\"model\":\"claude-2.0\",\"stop\":\"\\n\\nHuman:\",\"log_id\":\"e5adfd3702d8598aca8a49e0e09436261f692c97406156018bb351b0a1569e81\"}"
   }
 
+  @validate_summary_success_resp %HTTPoison.Response{
+    status_code: 200,
+    body:
+      "{\"completion\":\"PASS\",\"stop_reason\":\"stop_sequence\",\"model\":\"claude-2.0\",\"stop\":\"\\n\\nHuman:\",\"log_id\":\"e5adfd3702d8598aca8a49e0e09436261f692c97406156018bb351b0a1569e81\"}"
+  }
+
   test "POST /api/generate_readme", %{conn: conn} do
     expect(HTTPoison.BaseMock, :post!, fn _url,
                                           "{\"max_tokens_to_sample\":99000," <> _payload,
@@ -46,7 +52,15 @@ defmodule SummarizerWeb.ReadmeControllerTest do
       @summarize_text_to_readme_success_resp
     end)
 
-    conn = post(conn, "/api/generate_readme", %{url: "https://github.com/isavita/summarizer"})
-    assert json_response(conn, 200)["data"]
+    expect(HTTPoison.BaseMock, :post!, fn _url,
+                                          "{\"max_tokens_to_sample\":95000,\"model\":\"claude-2\",\"prompt\":\"\\n\\nHuman:\\nThe text" <>
+                                            _payload,
+                                          _headers,
+                                          _opts ->
+      @validate_summary_success_resp
+    end)
+
+    conn = post(conn, "/create", %{url: "https://github.com/isavita/summarizer"})
+    assert html_response(conn, 200)
   end
 end
