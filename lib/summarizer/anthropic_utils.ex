@@ -96,6 +96,13 @@ defmodule Summarizer.AnthropicUtils do
     Please provide a summarization that can serve as an introduction to the project, and could be placed at the beginning of the README file.
     It is crucial that the response is formatted with the summarization enclosed within the <ReadmeFile> XML tag as shown in the example: <ReadmeFile>{{README}}</ReadmeFile>.
     #{combined_summary}
+    For your reference, Markdown allows text styling with simple symbols:
+    - **Bold** with `**bold**`
+    - _Italic_ with `*italic*`
+    - `Code` with backticks
+    - Headers with `#` for H1, `##` for H2, and so on
+    - Bullet lists with `-` or `*` at the start of a line
+    - Numbered lists with `1.`, `2.`, etc., at the start of a line
     <ReadmeFile>
     {{README}}}
     </ReadmeFile>\n\n
