@@ -21,6 +21,7 @@ defmodule SummarizerWeb.ReadmeControllerTest do
     body:
       "{\"completion\":\" <ReadmeFile>\\n\\n# Summarizer\\n\\nThis Phoenix web application generates README files by summarizing codebases. The main logic for summarizing files is in `summarizer.ex`. It identifies important files, summarizes file groups, combines summaries, and validates output using utility modules and the Anthropic HTTP client. \\n\\nThe `page_controller.ex` handles rendering 404 pages. The router defines the application's API, dev, health check, and 404 catch-all routes.\\n\\n</ReadmeFile>\",\"stop_reason\":\"stop_sequence\",\"model\":\"claude-2.0\",\"stop\":\"\\n\\nHuman:\",\"log_id\":\"e5adfd3702d8598aca8a49e0e09436261f692c97406156018bb351b0a1569e81\"}"
   }
+
   test "POST /api/generate_readme", %{conn: conn} do
     expect(HTTPoison.BaseMock, :post!, fn _url,
                                           "{\"max_tokens_to_sample\":99000," <> _payload,
@@ -38,7 +39,7 @@ defmodule SummarizerWeb.ReadmeControllerTest do
     end)
 
     expect(HTTPoison.BaseMock, :post!, fn _url,
-                                          "{\"max_tokens_to_sample\":95000,\"model\":\"claude-2\",\"prompt\":\"\\n\\nHuman:\\nThe text" <>
+                                          "{\"max_tokens_to_sample\":95000,\"model\":\"claude-2\",\"prompt\":\"\\n\\nHuman:\\n <FileSummaries" <>
                                             _payload,
                                           _headers,
                                           _opts ->

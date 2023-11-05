@@ -1,7 +1,6 @@
 defmodule Summarizer.AnthropicUtils do
   @moduledoc false
   import SweetXml
-  require Logger
 
   @doc """
   Extracts the completion from the response body.
@@ -91,11 +90,13 @@ defmodule Summarizer.AnthropicUtils do
   def compose_final_summary_message(combined_summary) do
     """
     \n\nHuman:
-    The text provided below is a collection of summaries for important files in a project.
-    The goal is to obtain a concise and clear summary for the README file that gives an overview of the project based on these summaries.
-    Please provide a summarization that can serve as an introduction to the project, and could be placed at the beginning of the README file.
-    It is crucial that the response is formatted with the summarization enclosed within the <ReadmeFile> XML tag as shown in the example: <ReadmeFile>{{README}}</ReadmeFile>.
     #{combined_summary}
+    The text provided above is a collection of summaries for important files in a project.
+    The goal is to obtain a concise and clear summary for the README file that gives an overview of the project based on these summaries.
+    Please provide a summarization that can serve as an introduction to the project.
+    The summarization should offer a detailed description of the project, elaborating on its objectives, functionality, and how to use it, targeting other programmers as the audience. It is essential that this summary is comprehensive and serves as the entire README, guiding users effectively on how to interact with the project.
+    It is crucial that the response is formatted with the summarization enclosed within the <ReadmeFile> XML tag as shown in the example: <ReadmeFile>{{README}}</ReadmeFile>.
+
     For your reference, Markdown allows text styling with simple symbols:
     - **Bold** with `**bold**`
     - _Italic_ with `*italic*`
