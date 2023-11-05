@@ -1,4 +1,4 @@
-# Phoenix Codebase README Generator
+# ![Phoenix Codebase README Generator Logo](./priv/static/summarizer_logo.png)
 
 This Elixir application generates README files by summarizing codebases. 
 
