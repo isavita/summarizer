@@ -158,4 +158,23 @@ defmodule Summarizer.AnthropicUtils do
       :exit, _ -> {:error, "Error: Cannot parse the response"}
     end
   end
+
+  def compose_validate_summary_message(summary) do
+    """
+    \n\nHuman:
+    The text provided below is intended to be a README file for a project:
+    #{summary}
+    <ReadmeFile>{{README}}</ReadmeFile>
+
+    Please review the README content for any harmful content or personally identifiable information (PII). If any harmful content or PII is detected, please indicate it by responding with "HARMFUL CONTENT". If no such issues are present, please respond with "PASS".
+    \n\nAssistant:
+    """
+  end
+
+  def check_validate_summary_response(resp_body) do
+    case String.contains?(String.downcase(resp_body), "harmful content") do
+      true -> {:error, "HARMFUL CONTENT"}
+      false -> :ok
+    end
+  end
 end

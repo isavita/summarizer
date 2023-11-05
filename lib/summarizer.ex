@@ -79,7 +79,16 @@ defmodule Summarizer do
     end
   end
 
-  defp validate_summary(summary), do: {:ok, summary}
+  defp validate_summary(summary) do
+    message = Utils.compose_validate_summary_message(summary)
+
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 95_000),
+         :ok <- Utils.check_validate_summary_response(resp_body) do
+      {:ok, summary}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
 
   def generate_file_tree(path) when is_binary(path) do
     path
