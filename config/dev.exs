@@ -42,10 +42,6 @@ config :summarizer, SummarizerWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :summarizer, dev_routes: true
 
-config :summarizer,
-       :anthropic_api_key,
-       "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"
-
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

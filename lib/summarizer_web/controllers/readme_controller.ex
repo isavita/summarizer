@@ -14,20 +14,15 @@ defmodule SummarizerWeb.ReadmeController do
   end
 
   defp clone_repo_to_tmp(github_url) do
-    tmp_dir = "#{File.cwd!()}/#{random_string()}"
-    File.mkdir_p!(tmp_dir)
+    random_dir_name = random_string()
+    target_dir = "/tmp/#{random_dir_name}"
 
-    if File.exists?(tmp_dir) do
-      {:ok, tmp_dir}
-    else
-      {_output, 0} =
-        System.cmd(
-          "git",
-          ["clone", "--depth", "1", github_url, tmp_dir],
-          stderr_to_stdout: true
-        )
+    case System.cmd("git", ["clone", github_url, target_dir]) do
+      {_, 0} ->
+        {:ok, target_dir}
 
-      {:ok, tmp_dir}
+      {error_message, _} ->
+        {:error, error_message}
     end
   end
 
