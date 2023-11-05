@@ -33,6 +33,7 @@ defmodule Summarizer.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.7.10"},
+      {:earmark, "~> 1.4"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},

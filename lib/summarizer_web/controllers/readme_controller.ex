@@ -20,11 +20,12 @@ defmodule SummarizerWeb.ReadmeController do
 
   def create(conn, %{"url" => github_url}) do
     with {:ok, tmp_dir} <- clone_repo_to_tmp(github_url),
-         {:ok, summary} <- Summarizer.summarize(tmp_dir),
-         {:ok, _} <- File.rm_rf(tmp_dir) do
+         {:ok, markdown_summary} <- Summarizer.summarize(tmp_dir),
+         {:ok, _} <- File.rm_rf(tmp_dir),
+         html_content <- render_markdown_to_html(markdown_summary) do
       conn
       |> put_resp_content_type("text/html")
-      |> send_resp(200, success_html(summary))
+      |> send_resp(200, success_html(markdown_summary, html_content))
     else
       {:error, error_msg} ->
         conn
@@ -33,8 +34,21 @@ defmodule SummarizerWeb.ReadmeController do
     end
   end
 
-  defp success_html(summary) do
-    "<html><body><pre>" <> summary <> "</pre></body></html>"
+  defp render_markdown_to_html(markdown) do
+    case Earmark.as_html(markdown) do
+      {:ok, html, _} -> html
+      {:ok, html} -> html
+      {:error, error_msg} -> error_msg
+    end
+  end
+
+  defp success_html(markdown, html) do
+    "<html><body>
+    <h1>Markdown</h1>
+    <pre>#{markdown}</pre>
+    <h1>Rendered</h1>
+    #{html}
+  </body></html>"
   end
 
   defp error_html(error_msg) do
