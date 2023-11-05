@@ -8,11 +8,9 @@ defmodule Summarizer do
   alias Summarizer.Formatter
   alias Summarizer.AnthropicUtils, as: Utils
 
+  @max_file_tree_size 110_000 # assuming that a token is more than 1 char long
+
   def summarize(path) do
-    # Add few function that should called claude api
-    # The first should be to ask the model which files are important to the model
-    # The second should make the call to the model with the content of the files and ask to make a summary of the project
-    # The third for the moment will do nothing but simply return what is given but in the future we will implement validation that the content is appropriate and some sanity checks
     with {:ok, important_files} <- identify_important_files(path),
          {:ok, summary} <- summarize_project(important_files),
          {:ok, validated_summary} <- validate_summary(summary) do
@@ -26,9 +24,10 @@ defmodule Summarizer do
     message =
       path
       |> generate_file_tree()
+      |> String.slice(0, @max_file_tree_size)
       |> Utils.compose_file_tree_analysis_message()
 
-    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message),
+    with {:ok, resp_body} <- AnthropicHTTPClient.complete(message, max_tokens_to_sample: 99_000),
          {:ok, important_files} <-
            Utils.parse_compose_file_tree_analysis_message_response(resp_body) do
       {:ok, important_files}
