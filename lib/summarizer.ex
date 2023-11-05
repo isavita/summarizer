@@ -8,7 +8,8 @@ defmodule Summarizer do
   alias Summarizer.Formatter
   alias Summarizer.AnthropicUtils, as: Utils
 
-  @max_file_tree_size 110_000 # assuming that a token is more than 1 char long
+  # assuming that a token is more than 1 char long
+  @max_file_tree_size 110_000
 
   def summarize(path) do
     with {:ok, important_files} <- identify_important_files(path),

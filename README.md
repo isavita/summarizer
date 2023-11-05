@@ -1,18 +1,5 @@
 # Summarizer
 
-To start your Phoenix server:
+This Phoenix web application generates README files by summarizing codebases. The main logic for summarizing files is in `summarizer.ex`. It identifies important files, summarizes file groups, combines summaries, and validates output using utility modules and the Anthropic HTTP client. 
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+The `page_controller.ex` handles rendering 404 pages. The router defines the application's API, dev, health check, and 404 catch-all routes.

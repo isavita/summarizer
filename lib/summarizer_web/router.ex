@@ -9,6 +9,7 @@ defmodule SummarizerWeb.Router do
 
   scope "/api", SummarizerWeb do
     pipe_through :api
+    post "/generate_readme", ReadmeController, :create
   end
 
   if Application.compile_env(:summarizer, :dev_routes) do
