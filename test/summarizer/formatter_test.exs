@@ -14,11 +14,11 @@ defmodule Summarizer.FormatterTest do
 
     expected_output =
       "  lib/\n" <>
-      "  filetree.ex\n" <>
-      "  filter.ex\n" <>
-      "  test/\n" <>
-      "  filetree_test.exs\n" <>
-      "  filter_test.exs"
+        "  filetree.ex\n" <>
+        "  filter.ex\n" <>
+        "  test/\n" <>
+        "  filetree_test.exs\n" <>
+        "  filter_test.exs"
 
     assert Formatter.format_tree(file_structure) == expected_output
   end
